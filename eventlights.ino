@@ -103,45 +103,70 @@ RingSpan * backRight  = new RingSpan(backRing, BACK_RIGHT_START_PIXEL, RIGHT_PIX
 
 ////////////////////////////////////////////////////////////////////////////
 
+bool scanForPWMState(int state, uint32_t timeout = 10000) {
+  timeout = micros() + timeout;
+
+  while (timeout > micros()) {
+    if (digitalRead(PWM_INPUT_PIN) == state) { return true; }
+  }
+
+  return false;
+}
+
+uint32_t samplePWM() {
+  // scan for rising edge
+  if (scanForPWMState(LOW)) {
+    if (scanForPWMState(HIGH)) {
+      uint32_t now = micros();
+      if (scanForPWMState(LOW)) {
+        return micros() - now;
+      }
+    }
+  }
+
+  return 0;
+}
+
+void updateAll(uint32_t top, uint32_t left, uint32_t right) {
+  frontTop->setColor(top);
+  frontLeft->setColor(left);
+  frontRight->setColor(right);
+  backTop->setColor(top);
+  backLeft->setColor(left);
+  backRight->setColor(right);
+}
+
+void updateEventLights(uint32_t pwmPulseWidth) {
+  if (pwmPulseWidth < 510) { updateAll(OFF, OFF, OFF); }
+  else if (pwmPulseWidth < 531) { updateAll(RED, RED, RED); }
+  else if (pwmPulseWidth < 552) { updateAll(RED, RED, GREEN); }
+  else if (pwmPulseWidth < 573) { updateAll(RED, GREEN, RED); }
+  else if (pwmPulseWidth < 594) { updateAll(RED, GREEN, GREEN); }
+  else if (pwmPulseWidth < 615) { updateAll(VIOLET, RED, RED); }
+  else if (pwmPulseWidth < 636) { updateAll(VIOLET, RED, GREEN); }
+  else if (pwmPulseWidth < 657) { updateAll(VIOLET, GREEN, RED); }
+  else if (pwmPulseWidth < 678) { updateAll(VIOLET, GREEN, GREEN); }
+  else if (pwmPulseWidth < 699) { updateAll(GREEN, RED, RED); }
+  else if (pwmPulseWidth < 720) { updateAll(GREEN, RED, GREEN); }
+  else if (pwmPulseWidth < 741) { updateAll(GREEN, GREEN, RED); }
+  else if (pwmPulseWidth < 762) { updateAll(GREEN, GREEN, GREEN); }
+  else { updateAll(WHITE, WHITE, WHITE); }
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 void setup() {
-  frontTop->setColor(OFF);
-  frontLeft->setColor(OFF);
-  frontRight->setColor(OFF);
-  backTop->setColor(OFF);
-  backLeft->setColor(OFF);
-  backRight->setColor(OFF);
+  pinMode(PWM_INPUT_PIN,  INPUT);
+  pinMode(FRONT_RING_PIN, OUTPUT);
+  pinMode(BACK_RING_PIN,  OUTPUT);
+
+  updateAll(OFF, OFF, OFF);
 
   frontRing->setBrightness(0xFF);
   backRing->setBrightness(0xFF);
 }
 
 void loop() {
-  frontTop->setColor(RED);
-  delay(500);
-  frontTop->setColor(VIOLET);
-  delay(500);
-  frontTop->setColor(GREEN);
-  delay(500);
-  frontLeft->setColor(RED);
-  delay(500);
-  frontLeft->setColor(GREEN);
-  delay(500);
-  frontRight->setColor(RED);
-  delay(500);
-  frontRight->setColor(GREEN);
-  delay(500);
-  backTop->setColor(RED);
-  delay(500);
-  backTop->setColor(VIOLET);
-  delay(500);
-  backTop->setColor(GREEN);
-  delay(500);
-  backLeft->setColor(RED);
-  delay(500);
-  backLeft->setColor(GREEN);
-  delay(500);
-  backRight->setColor(RED);
-  delay(500);
-  backRight->setColor(GREEN);
-  delay(500);
+  updateEventLights(samplePWM());
+  delay(100);
 }
