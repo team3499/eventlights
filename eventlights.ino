@@ -81,14 +81,13 @@ void
 RingSpan::setColor(uint32_t color) {
   uint16_t numPixels = ring->numPixels();
 
-  for (int i = startPixel ; i < count ; ++i) {
+  for (int i = startPixel ; i < startPixel + count ; ++i) {
     if (i < numPixels) {
       ring->setPixelColor(i, color);
     } else {
       ring->setPixelColor(i - numPixels, color);
     }
   }
-  ring->show();
 }
 
 Adafruit_NeoPixel * frontRing = new Adafruit_NeoPixel(TOP_PIXEL_COUNT + LEFT_PIXEL_COUNT + RIGHT_PIXEL_COUNT, FRONT_RING_PIN, NEO_GRB | NEO_KHZ800);
@@ -134,6 +133,8 @@ void updateAll(uint32_t top, uint32_t left, uint32_t right) {
   backTop->setColor(top);
   backLeft->setColor(left);
   backRight->setColor(right);
+  frontRing->show();
+  backRing->show();
 }
 
 void updateEventLights(uint32_t pwmPulseWidth) {
@@ -167,6 +168,11 @@ void setup() {
 }
 
 void loop() {
-  updateEventLights(samplePWM());
+  // average 16 readings
+  uint32_t pwmPulseWidth = 0;
+  for (int i = 0; i < 16; ++i) { pwmPulseWidth += samplePWM(); }
+  pwmPulseWidth /= 16;
+
+  updateEventLights(pwmPulseWidth);
   delay(100);
 }
