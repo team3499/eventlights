@@ -16,21 +16,21 @@
 //
 // PWM pulse duration used to select combination of colors:
 //
-//    PULSE      TOP        LEFT        RIGHT
-//    500        OFF        OFF         OFF
-//    520        RED        RED         RED
-//    541        RED        RED         GREEN
-//    562        RED        GREEN       RED
-//    583        RED        GREEN       GREEN
-//    604        VIOLET     RED         RED
-//    625        VIOLET     RED         GREEN
-//    646        VIOLET     GREEN       RED
-//    667        VIOLET     GREEN       GREEN
-//    688        GREEN      RED         RED
-//    709        GREEN      RED         GREEN
-//    730        GREEN      GREEN       RED
-//    751        GREEN      GREEN       GREEN
-//    772        WHITE      WHITE       WHITE
+//    RIO    PULSE      TOP        LEFT        RIGHT
+//    000    000        OFF        OFF         OFF
+//    001    250        RED        RED         RED
+//    021    260        RED        RED         GREEN
+//    041    270        RED        GREEN       RED
+//    061    280        RED        GREEN       GREEN
+//    081    290        VIOLET     RED         RED
+//    101    300        VIOLET     RED         GREEN
+//    121    310        VIOLET     GREEN       RED
+//    141    320        VIOLET     GREEN       GREEN
+//    161    330        GREEN      RED         RED
+//    181    340        GREEN      RED         GREEN
+//    201    350        GREEN      GREEN       RED
+//    221    260        GREEN      GREEN       GREEN
+//    241    370        WHITE      WHITE       WHITE
 //
 
 #define PWM_INPUT_PIN  2
@@ -48,9 +48,9 @@
 #define LEFT_PIXEL_COUNT  5
 #define RIGHT_PIXEL_COUNT 5
 
-#define FRONT_TOP_START_PIXEL   10
-#define FRONT_LEFT_START_PIXEL   5
-#define FRONT_RIGHT_START_PIXEL  0
+#define FRONT_TOP_START_PIXEL   18
+#define FRONT_LEFT_START_PIXEL  13
+#define FRONT_RIGHT_START_PIXEL  8
 
 #define BACK_TOP_START_PIXEL   10
 #define BACK_LEFT_START_PIXEL   5
@@ -138,20 +138,21 @@ void updateAll(uint32_t top, uint32_t left, uint32_t right) {
 }
 
 void updateEventLights(uint32_t pwmPulseWidth) {
-  if (pwmPulseWidth < 510) { updateAll(OFF, OFF, OFF); }
-  else if (pwmPulseWidth < 531) { updateAll(RED, RED, RED); }
-  else if (pwmPulseWidth < 552) { updateAll(RED, RED, GREEN); }
-  else if (pwmPulseWidth < 573) { updateAll(RED, GREEN, RED); }
-  else if (pwmPulseWidth < 594) { updateAll(RED, GREEN, GREEN); }
-  else if (pwmPulseWidth < 615) { updateAll(VIOLET, RED, RED); }
-  else if (pwmPulseWidth < 636) { updateAll(VIOLET, RED, GREEN); }
-  else if (pwmPulseWidth < 657) { updateAll(VIOLET, GREEN, RED); }
-  else if (pwmPulseWidth < 678) { updateAll(VIOLET, GREEN, GREEN); }
-  else if (pwmPulseWidth < 699) { updateAll(GREEN, RED, RED); }
-  else if (pwmPulseWidth < 720) { updateAll(GREEN, RED, GREEN); }
-  else if (pwmPulseWidth < 741) { updateAll(GREEN, GREEN, RED); }
-  else if (pwmPulseWidth < 762) { updateAll(GREEN, GREEN, GREEN); }
-  else { updateAll(WHITE, WHITE, WHITE); }
+  if (pwmPulseWidth < 245) { updateAll(OFF, OFF, OFF); }
+  else if (pwmPulseWidth < 255) { updateAll(RED, RED, RED); }
+  else if (pwmPulseWidth < 265) { updateAll(RED, RED, GREEN); }
+  else if (pwmPulseWidth < 275) { updateAll(RED, GREEN, RED); }
+  else if (pwmPulseWidth < 285) { updateAll(RED, GREEN, GREEN); }
+  else if (pwmPulseWidth < 295) { updateAll(VIOLET, RED, RED); }
+  else if (pwmPulseWidth < 305) { updateAll(VIOLET, RED, GREEN); }
+  else if (pwmPulseWidth < 315) { updateAll(VIOLET, GREEN, RED); }
+  else if (pwmPulseWidth < 325) { updateAll(VIOLET, GREEN, GREEN); }
+  else if (pwmPulseWidth < 335) { updateAll(GREEN, RED, RED); }
+  else if (pwmPulseWidth < 345) { updateAll(GREEN, RED, GREEN); }
+  else if (pwmPulseWidth < 355) { updateAll(GREEN, GREEN, RED); }
+  else if (pwmPulseWidth < 365) { updateAll(GREEN, GREEN, GREEN); }
+  else if (pwmPulseWidth < 375) { updateAll(WHITE, WHITE, WHITE); }
+  else { updateAll(OFF, OFF, OFF); }
 }
 
 ////////////////////////////////////////////////////////////////////////////
